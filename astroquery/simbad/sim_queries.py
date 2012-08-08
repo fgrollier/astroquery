@@ -22,16 +22,16 @@ class _Query(object):
 
         Parameters
         ----------
-        votabledef: string or :class:`VoTableDef`, optional
+        votabledef : string or :class:`VoTableDef`, optional
             Definition object for the output.
 
-        limit: int, optional
+        limit : int, optional
             Limits the number of rows returned. None sets the limit to 
             SIMBAD's server maximum.
 
-        pedantic: bool, optional
+        pedantic : bool, optional
             The value to pass to the votable parser for the *pedantic* 
-            parameters.
+            parameter.
         """
 
         return execute_query(self, votabledef=votabledef, limit=limit,
@@ -44,10 +44,10 @@ class QueryId(_Query):
 
     Parameters
     ----------
-    identifier: string
+    identifier : string
         The identifier to query for.
 
-    wildcard: bool, optional
+    wildcard : bool, optional
         If True, specifies that `identifier` should be understood as an 
         expression with wildcards.
 
@@ -74,10 +74,10 @@ class QueryAroundId(_Query):
 
     Parameters
     ----------
-    identifier: string
+    identifier : string
         The identifier around wich to query.
 
-    radius: string, optional
+    radius : string, optional
         The value of the cone search radius. The value must be suffixed by
         'd' (degrees), 'm' (arcminutes) or 's' (arcseconds).
         If set to None the default value will be used.
@@ -107,7 +107,7 @@ class QueryCat(_Query):
     Parameters
     ----------
 
-    catalog: string
+    catalog : string
         The catalog identifier, for example 'm', 'ngc'.
 
     """
@@ -134,24 +134,24 @@ class QueryCoord(_Query):
 
     Parameters
     ----------
-    ra: string
+    ra : string
         Right ascension, for example '+12 30'.
 
-    dec: string
+    dec : string
         Declination, for example '-20 17'.
 
-    radius: string, optional
+    radius : string, optional
         The value of the cone search radius. The value must be suffixed by
         'd' (degrees), 'm' (arcminutes) or 's' (arcseconds).
         If set to None the default value will be used.
 
-    frame: string, optional
+    frame : string, optional
         Frame of input coordinates.
 
-    equinox: string optional
+    equinox : string optional
         Equinox of input coordinates.
 
-    epoch:  string, optional
+    epoch :  string, optional
         Epoch of input coordinates.
 
     """
@@ -188,7 +188,7 @@ class QueryBibobj(_Query):
 
     Parameters
     ----------
-    bibcode: string
+    bibcode : string
         The bibcode of the article.
 
     """
@@ -211,38 +211,40 @@ class QueryBibobj(_Query):
 @ValidatedAttribute('epoch', _ScriptParameterEpoch)
 @ValidatedAttribute('equinox', _ScriptParameterEquinox)
 class QueryMulti(_Query):
+    """ A type of Query used to aggregate the values of multiple simple 
+    queries into a single result.
+
+
+    Parameters
+    ----------
+    queries : iterable of Query objects
+        The list of Query objects to aggregate results for.
+
+    radius : string, optional
+        The value of the cone search radius. The value must be suffixed by
+        'd' (degrees), 'm' (arcminutes) or 's' (arcseconds).
+        If set to None the default value will be used.
+
+    frame : string, optional
+        Frame of input coordinates.
+
+    epoch :  string, optional
+        Epoch of input coordinates.
+
+    equinox : string, optional
+        Equinox of input coordinates.
+
+
+        .. note:: Each of the *radius*, *frame*, *equinox* et *epoch* arguments
+            acts as a default value for the whole `QueryMulti` object.
+            Individual queries may override these.
+    """
+
     __command_ids = ('radius', 'frame', 'epoch', 'equinox')
     __queries = []
 
     def __init__(self, queries=None, radius=None, frame=None, epoch=None,
                                                                 equinox=None):
-        """ A type of Query used to aggregate the values of multiple simple 
-        queries into a single result.
-
-        Parameters
-        ----------
-        queries: iterable of Query objects
-            The list of Query objects to aggregate results for.
-
-        radius: string, optional
-            The value of the cone search radius. The value must be suffixed by
-            'd' (degrees), 'm' (arcminutes) or 's' (arcseconds).
-            If set to None the default value will be used.
-
-        frame: string, optional
-            Frame of input coordinates.
-
-        equinox: string optional
-            Equinox of input coordinates.
-
-        epoch:  string, optional
-            Epoch of input coordinates.
-
-        .. note:: Each of the *radius*, *frame*, *equinox* et *epoch* arguments
-                    acts as a default value for the whole MultiQuery object.
-                    Individual queries may override these.
-        """
-
         self.radius = radius
         self.frame = frame
         self.epoch = epoch
